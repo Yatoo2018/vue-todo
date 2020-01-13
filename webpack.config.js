@@ -12,7 +12,7 @@ module.exports = {
   module: {
     rules:[
       {
-        test:/.vue$/,
+        test:/\.vue$/,
         loader: 'vue-loader'
       },
       // 它会应用到普通的 `.js` 文件
@@ -28,6 +28,25 @@ module.exports = {
         use: [
           'vue-style-loader',
           'css-loader'
+        ]
+      },
+      {
+        test: /\.styl$/,
+        use:[
+          'css-loader',
+          'stylus-loader'
+        ]
+      },
+      {
+        test: /\.(gif|jpg|jpeg|png|svg)$/,
+        use:[
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 1024,
+              name:'[name]-aaa.[ext]'
+            }
+          }
         ]
       }
     ]
