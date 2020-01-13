@@ -1,9 +1,12 @@
 const path = require('path')
+const webpack = require('webpack')
 
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-
-module.exports = {
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const isDev = process.env.NODE_ENV === 'development'
+const config =  {
   mode:'none',
+  target: 'web',
   entry: path.join(__dirname, 'src/index.js'),
   output: {
     filename: 'bundle.js',
@@ -52,7 +55,34 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env':{
+        NODE_ENV: isDev ? '"development"' : '"production"'
+      }
+    }),
     // 请确保引入这个插件！
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+    new HtmlWebpackPlugin()
   ]
 }
+if(isDev) {
+  config.devtool = "#cheap-moudle-eval-source-map"
+  config.devServer = {
+    port: 8001,
+    host: '0.0.0.0',
+    overlay: {
+      errors: true
+    },
+    hot: true,
+    open: true,
+    // historyFallback: {
+
+    // }
+  },
+  config.plugins.push(
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NoEmitOnErrorsPlugin()
+  )
+}
+
+module.exports = config
